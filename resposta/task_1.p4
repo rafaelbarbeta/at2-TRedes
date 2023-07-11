@@ -3,6 +3,7 @@
 #include <v1model.p4>
 
 const bit<16> TYPE_IPV4 = 0x800;
+const bit<8>  TCP_PROTOCOL = 0x6;
 
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
@@ -33,13 +34,28 @@ header ipv4_t {
     ip4Addr_t dstAddr;
 }
 
+header tcp_t {
+    bit<16> srcPort;
+    bit<16> dstPort;
+    bit<32> seqNo;
+    bit<32> ackNo;
+    bit<4> dataOffset;
+    bit<3> res;
+    bit<3> ecn;
+    bit<6> ctrl;
+    bit<16> window;
+    bit<16> checksum;
+    bit<16> urgentPtr;
+}
+
 struct metadata {
-    /* empty */
+    bit<16> fluxStamp;
 }
 
 struct headers {
     ethernet_t   ethernet;
     ipv4_t       ipv4;
+    tcp_t        tcp;
 }
 
 /*************************************************************************
@@ -65,9 +81,16 @@ parser MyParser(packet_in packet,
 
     state parse_ipv4 {
         packet.extract(hdr.ipv4);
-        transition accept;
+        transition select(hdr.ipv4.protocol) {
+            TCP_PROTOCOL: parse_tcp;
+            default: accept;
+        }
     }
 
+    state parse_tcp {
+        packet.extract(hdr.tcp);
+        transition accept;
+    }
 }
 
 /*************************************************************************
@@ -96,6 +119,20 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.dstAddr = dstAddr;
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
     }
+
+    action markTraffic() {
+        hash (
+            meta.fluxStamp,
+            HashAlgorithm.crc16,
+            1,
+            {   hdr.ipv4.srcAddr,
+                hdr.ipv4.dstAddr,
+                hdr.ipv4.protocol,
+                hdr.tcp.srcPort,
+                hdr.tcp.dstPort
+            },
+            4);
+    }
     
     table ipv4_lpm {
         key = {
@@ -109,10 +146,13 @@ control MyIngress(inout headers hdr,
         size = 1024;
         default_action = NoAction(); /*sigcomm: default_action = drop();*/
     }
-    
+
     apply {
         if (hdr.ipv4.isValid()) {
            ipv4_lpm.apply();
+        }
+        else {
+            drop();
         }
     }
 }
