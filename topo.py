@@ -58,7 +58,7 @@ class MyTopo(Topo):
         
         for h in xrange(nb_hosts):
             host = self.addHost('h%d' % (h + 1),
-                                 ip = "10.0.%d.10/24" % h,
+                                 ip = "10.0.%d.%d/24" % (h + 1, h + 1),
                                  mac = '00:04:00:00:00:%02x' % h)
 
         i = 0
