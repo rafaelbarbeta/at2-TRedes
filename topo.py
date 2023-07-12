@@ -137,17 +137,17 @@ def main():
     h.setARP(sw_addr[1], sw_mac_s1_eth2)
     h.setDefaultRoute("dev eth0 via %s" % sw_addr[1])
 
-#    s = net.get('s3')
-#    sw_mac_s3_eth1 = s.intf("s3-eth1").MAC()
-#    h = net.get('h2')
-#    h.setARP(sw_addr[1], sw_mac_s3_eth1)
-#    h.setDefaultRoute("dev eth0 via %s" % sw_addr[1])
-#
-#    s = net.get('s4')
-#    sw_mac_s4_eth1 = s.intf("s4-eth1").MAC()  
-#    h = net.get('h3')
-#    h.setARP(sw_addr[2], sw_mac_s4_eth1)
-#    h.setDefaultRoute("dev eth0 via %s" % sw_addr[2])
+    s = net.get('s3')
+    sw_mac_s3_eth1 = s.intf("s3-eth1").MAC()
+    h = net.get('h2')
+    h.setARP(sw_addr[1], sw_mac_s3_eth1)
+    h.setDefaultRoute("dev eth0 via %s" % sw_addr[1])
+
+    s = net.get('s4')
+    sw_mac_s4_eth1 = s.intf("s4-eth1").MAC()  
+    h = net.get('h3')
+    h.setARP(sw_addr[2], sw_mac_s4_eth1)
+    h.setDefaultRoute("dev eth0 via %s" % sw_addr[2])
 
 
     sleep(1)

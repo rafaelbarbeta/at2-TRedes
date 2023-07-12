@@ -109,6 +109,7 @@ control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
 control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
+
     action drop() {
         mark_to_drop();  /* sigcomm: mark_to_drop(standard_metadata)*/
     }
@@ -120,7 +121,7 @@ control MyIngress(inout headers hdr,
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
     }
 
-    action markTraffic() {
+    action calcHash() {
         hash (
             meta.fluxStamp,
             HashAlgorithm.crc16,
@@ -133,23 +134,38 @@ control MyIngress(inout headers hdr,
             },
             4);
     }
-    
+
     table ipv4_lpm {
         key = {
             hdr.ipv4.dstAddr: lpm;
         }
         actions = {
             ipv4_forward;
-            drop;
             NoAction;
         }
         size = 1024;
-        default_action = NoAction(); /*sigcomm: default_action = drop();*/
+        default_action = NoAction(); 
+    }
+
+    table forward_hash {
+        key = {
+            meta.fluxStamp: exact;
+        }
+        actions = {
+            ipv4_forward;
+            NoAction;
+        }
+        size = 1024;
+        default_action = NoAction();
     }
 
     apply {
         if (hdr.ipv4.isValid()) {
            ipv4_lpm.apply();
+           if (standard_metadata.ingress_port == 1 ) {
+                calcHash();
+                forward_hash.apply();
+           }
         }
         else {
             drop();
