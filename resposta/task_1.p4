@@ -110,6 +110,8 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
+    counter(5, CounterType.packets) countPkt;
+
     action drop() {
         mark_to_drop();  /* sigcomm: mark_to_drop(standard_metadata)*/
     }
@@ -119,6 +121,7 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+        countPkt.count((bit<32>)standard_metadata.egress_spec);
     }
 
     action calcHash() {
@@ -180,7 +183,9 @@ control MyIngress(inout headers hdr,
 control MyEgress(inout headers hdr,
                  inout metadata meta,
                  inout standard_metadata_t standard_metadata) {
-    apply {  }
+    apply { 
+        
+     }
 }
 
 /*************************************************************************

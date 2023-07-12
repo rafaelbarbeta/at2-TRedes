@@ -9,6 +9,8 @@
       "name" : "scalars_0",
       "id" : 0,
       "fields" : [
+        ["tmp", 32, false],
+        ["tmp_0", 32, false],
         ["metadata.fluxStamp", 16, false]
       ]
     },
@@ -241,7 +243,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 215,
+        "line" : 220,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -249,7 +251,20 @@
     }
   ],
   "meter_arrays" : [],
-  "counter_arrays" : [],
+  "counter_arrays" : [
+    {
+      "name" : "MyIngress.countPkt",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "resposta/task_1.p4",
+        "line" : 113,
+        "column" : 36,
+        "source_fragment" : "countPkt"
+      },
+      "size" : 5,
+      "is_direct" : false
+    }
+  ],
   "register_arrays" : [],
   "calculations" : [
     {
@@ -284,7 +299,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 192,
+        "line" : 197,
         "column" : 4,
         "source_fragment" : "update_checksum( ..."
       },
@@ -361,7 +376,7 @@
           "parameters" : [],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 114,
+            "line" : 116,
             "column" : 8,
             "source_fragment" : "mark_to_drop()"
           }
@@ -396,7 +411,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 118,
+            "line" : 120,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -415,7 +430,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 119,
+            "line" : 121,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -434,7 +449,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 120,
+            "line" : 122,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -476,9 +491,54 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 121,
+            "line" : 123,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "local",
+                    "value" : 1
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "count",
+          "parameters" : [
+            {
+              "type" : "counter_array",
+              "value" : "MyIngress.countPkt"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 124,
+            "column" : 8,
+            "source_fragment" : "countPkt.count((bit<32>)standard_metadata.egress_spec)"
           }
         }
       ]
@@ -511,7 +571,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 118,
+            "line" : 120,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -530,7 +590,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 119,
+            "line" : 121,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -549,7 +609,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 120,
+            "line" : 122,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -591,9 +651,54 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 121,
+            "line" : 123,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "local",
+                    "value" : 1
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "count",
+          "parameters" : [
+            {
+              "type" : "counter_array",
+              "value" : "MyIngress.countPkt"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 124,
+            "column" : 8,
+            "source_fragment" : "countPkt.count((bit<32>)standard_metadata.egress_spec)"
           }
         }
       ]
@@ -625,7 +730,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 125,
+            "line" : 128,
             "column" : 8,
             "source_fragment" : "hash ( ..."
           }
@@ -650,7 +755,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 138,
+            "line" : 141,
             "column" : 10,
             "source_fragment" : "ipv4_lpm"
           },
@@ -710,7 +815,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 150,
+            "line" : 153,
             "column" : 10,
             "source_fragment" : "forward_hash"
           },
@@ -773,7 +878,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 163,
+            "line" : 166,
             "column" : 12,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -796,7 +901,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 165,
+            "line" : 168,
             "column" : 15,
             "source_fragment" : "standard_metadata.ingress_port == 1"
           },
@@ -824,7 +929,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 180,
+        "line" : 183,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },

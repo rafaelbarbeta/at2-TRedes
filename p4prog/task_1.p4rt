@@ -5,4 +5,5 @@
 θέMyIngress.dropdropH
 +Υ¬MyIngress.ipv4_forwardipv4_forwarddstAddr 0
 port 	%
-#Ό»€MyIngress.calcHashcalcHash
+#Ό»€MyIngress.calcHashcalcHash*,
+$ϊΫMyIngress.countPktcountPkt
