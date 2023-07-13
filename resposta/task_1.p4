@@ -127,14 +127,14 @@ control MyIngress(inout headers hdr,
         hash (
             meta.fluxStamp,
             HashAlgorithm.crc16,
-            (bit<4>)1,
+            (bit<4>)2,
             {   hdr.ipv4.srcAddr,
                 hdr.ipv4.dstAddr,
                 hdr.ipv4.protocol,
                 hdr.tcp.srcPort,
                 hdr.tcp.dstPort
             },
-            (bit<4>)4);
+            (bit<4>)3);
     }
 
     table ipv4_lpm {
