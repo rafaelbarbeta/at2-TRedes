@@ -31,6 +31,10 @@ def main():
         print 'src_port must be greater than 1024'
         exit(1)
 
+    if int(sys.argv[3]) <= 3000 or int(sys.argv[3]) >= 5000:
+        print 'dst_port must be greater than 3000 and less than 5000'
+        exit(1)
+
     my_host = socket.gethostname()
     my_ip = socket.gethostbyname(my_host)
 
