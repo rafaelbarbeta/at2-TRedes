@@ -121,7 +121,9 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-        countPkt.count((bit<32>)standard_metadata.egress_spec);
+        if (standard_metadata.egress_spec == 1) {
+            countPkt.count((bit<32>)standard_metadata.egress_spec);
+        }
     }
 
     action calcHash() {
