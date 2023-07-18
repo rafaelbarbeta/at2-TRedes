@@ -1,9 +1,0 @@
-P
-#¥ôÅMyIngress.ipv4_lpmipv4_lpmhdr.ipv4.dstAddr  (’¨Å∑∂Å@ÄV
-+˘ÊÉMyIngress.forward_hashforward_hashmeta.fluxStamp (’¨Å∑∂Å@Ä
-∑∂ÅNoActionNoAction
-Ë›ÅMyIngress.dropdropH
-+’¨ÅMyIngress.ipv4_forwardipv4_forwarddstAddr 0
-port 	%
-#ºªÄMyIngress.calcHashcalcHash*,
-$˙€ÅêMyIngress.countPktcountPkt

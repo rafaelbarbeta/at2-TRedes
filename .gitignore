@@ -1,1 +1,4 @@
 *.pcap
+*.json
+*.p4i
+*.p4rt

@@ -24,11 +24,11 @@ SWITCH_PATH=/usr/local/bin/simple_switch
 
 CLI_PATH=$BMV2_PATH/tools/runtime_CLI.py
 #
-$P4C_BM_SCRIPT --target bmv2-ss-p4org -x p4-16 resposta/task_1.p4 -o p4prog
+$P4C_BM_SCRIPT --target bmv2-ss-p4org -x p4-16 resposta/atividade3.p4 -o p4prog
 # This gives libtool the opportunity to "warm-up"
 
 sudo $SWITCH_PATH >/dev/null 2>&1
 sudo PYTHONPATH=$PYTHONPATH:$BMV2_PATH/mininet/ python topo.py \
     --behavioral-exe $SWITCH_PATH \
-    --json p4prog/task_1.json \
+    --json p4prog/atividade3.json \
     --cli $CLI_PATH
