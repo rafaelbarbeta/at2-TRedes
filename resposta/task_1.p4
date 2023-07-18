@@ -110,7 +110,8 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    counter(5, CounterType.packets) countPkt;
+    counter(5, CounterType.packets_and_bytes) countPkt;
+    register<bit<16>>(5) flux;
 
     action drop() {
         mark_to_drop();  /* sigcomm: mark_to_drop(standard_metadata)*/
@@ -162,13 +163,19 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
+        bit<16> tmp;
         if (hdr.ipv4.isValid()) {
-           ipv4_lpm.apply();
-           if (standard_metadata.ingress_port == 1 ) {
-                calcHash();
-                forward_hash.apply();
-                countPkt.count((bit<32>)standard_metadata.egress_spec);
-           }
+            ipv4_lpm.apply();
+            calcHash();
+            flux.read(tmp,(bit<32>)meta.fluxStamp);
+            if (tmp == 0) {
+                flux.write((bit<32>)meta.fluxStamp,meta.fluxStamp);
+            }
+            else {
+                meta.fluxStamp = tmp;
+            }
+            forward_hash.apply();
+            countPkt.count((bit<32>)standard_metadata.egress_spec);
         }
         else {
             drop();

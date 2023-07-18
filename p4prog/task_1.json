@@ -9,8 +9,10 @@
       "name" : "scalars_0",
       "id" : 0,
       "fields" : [
-        ["tmp", 32, false],
         ["tmp_0", 32, false],
+        ["tmp_1", 32, false],
+        ["tmp_2", 32, false],
+        ["tmp", 16, false],
         ["metadata.fluxStamp", 16, false]
       ]
     },
@@ -243,7 +245,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 220,
+        "line" : 227,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -258,14 +260,27 @@
       "source_info" : {
         "filename" : "resposta/task_1.p4",
         "line" : 113,
-        "column" : 36,
+        "column" : 46,
         "source_fragment" : "countPkt"
       },
       "size" : 5,
       "is_direct" : false
     }
   ],
-  "register_arrays" : [],
+  "register_arrays" : [
+    {
+      "name" : "MyIngress.flux",
+      "id" : 0,
+      "source_info" : {
+        "filename" : "resposta/task_1.p4",
+        "line" : 114,
+        "column" : 25,
+        "source_fragment" : "flux"
+      },
+      "size" : 5,
+      "bitwidth" : 16
+    }
+  ],
   "calculations" : [
     {
       "name" : "calc",
@@ -299,7 +314,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 197,
+        "line" : 204,
         "column" : 4,
         "source_fragment" : "update_checksum( ..."
       },
@@ -376,7 +391,7 @@
           "parameters" : [],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 116,
+            "line" : 117,
             "column" : 8,
             "source_fragment" : "mark_to_drop()"
           }
@@ -411,7 +426,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 120,
+            "line" : 121,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -430,7 +445,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 121,
+            "line" : 122,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -449,7 +464,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 122,
+            "line" : 123,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -491,54 +506,9 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 123,
-            "column" : 8,
-            "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["scalars", "tmp"]
-            },
-            {
-              "type" : "expression",
-              "value" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "&",
-                  "left" : {
-                    "type" : "local",
-                    "value" : 1
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0xffffffff"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "op" : "count",
-          "parameters" : [
-            {
-              "type" : "counter_array",
-              "value" : "MyIngress.countPkt"
-            },
-            {
-              "type" : "field",
-              "value" : ["scalars", "tmp"]
-            }
-          ],
-          "source_info" : {
-            "filename" : "resposta/task_1.p4",
             "line" : 124,
             "column" : 8,
-            "source_fragment" : "countPkt.count((bit<32>)standard_metadata.egress_spec)"
+            "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
           }
         }
       ]
@@ -571,7 +541,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 120,
+            "line" : 121,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -590,7 +560,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 121,
+            "line" : 122,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -609,7 +579,7 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 122,
+            "line" : 123,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -651,11 +621,52 @@
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 123,
+            "line" : 124,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
           }
-        },
+        }
+      ]
+    },
+    {
+      "name" : "MyIngress.calcHash",
+      "id" : 5,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "modify_field_with_hash_based_offset",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.fluxStamp"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x02"
+            },
+            {
+              "type" : "calculation",
+              "value" : "calc"
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x03"
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 128,
+            "column" : 8,
+            "source_fragment" : "hash ( ..."
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act",
+      "id" : 6,
+      "runtime_data" : [],
+      "primitives" : [
         {
           "op" : "assign",
           "parameters" : [
@@ -670,8 +681,146 @@
                 "value" : {
                   "op" : "&",
                   "left" : {
-                    "type" : "local",
-                    "value" : 1
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.fluxStamp"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "register_write",
+          "parameters" : [
+            {
+              "type" : "register_array",
+              "value" : "MyIngress.flux"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.fluxStamp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 172,
+            "column" : 16,
+            "source_fragment" : "flux.write((bit<32>)meta.fluxStamp,meta.fluxStamp)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act_0",
+      "id" : 7,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "metadata.fluxStamp"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 175,
+            "column" : 16,
+            "source_fragment" : "meta.fluxStamp = tmp"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act_1",
+      "id" : 8,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "metadata.fluxStamp"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xffffffff"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op" : "register_read",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp"]
+            },
+            {
+              "type" : "register_array",
+              "value" : "MyIngress.flux"
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_1"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "resposta/task_1.p4",
+            "line" : 170,
+            "column" : 12,
+            "source_fragment" : "flux.read(tmp,(bit<32>)meta.fluxStamp)"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "act_2",
+      "id" : 9,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp_2"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["standard_metadata", "egress_spec"]
                   },
                   "right" : {
                     "type" : "hexstr",
@@ -691,48 +840,14 @@
             },
             {
               "type" : "field",
-              "value" : ["scalars", "tmp_0"]
+              "value" : ["scalars", "tmp_2"]
             }
           ],
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 124,
-            "column" : 8,
+            "line" : 178,
+            "column" : 12,
             "source_fragment" : "countPkt.count((bit<32>)standard_metadata.egress_spec)"
-          }
-        }
-      ]
-    },
-    {
-      "name" : "MyIngress.calcHash",
-      "id" : 5,
-      "runtime_data" : [],
-      "primitives" : [
-        {
-          "op" : "modify_field_with_hash_based_offset",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["scalars", "metadata.fluxStamp"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x01"
-            },
-            {
-              "type" : "calculation",
-              "value" : "calc"
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x04"
-            }
-          ],
-          "source_info" : {
-            "filename" : "resposta/task_1.p4",
-            "line" : 128,
-            "column" : 8,
-            "source_fragment" : "hash ( ..."
           }
         }
       ]
@@ -775,10 +890,10 @@
           "direct_meters" : null,
           "action_ids" : [3, 0],
           "actions" : ["MyIngress.ipv4_forward", "NoAction"],
-          "base_default_next" : "node_4",
+          "base_default_next" : "tbl_calcHash",
           "next_tables" : {
-            "MyIngress.ipv4_forward" : "node_4",
-            "NoAction" : "node_4"
+            "MyIngress.ipv4_forward" : "tbl_calcHash",
+            "NoAction" : "tbl_calcHash"
           },
           "default_entry" : {
             "action_id" : 0,
@@ -799,9 +914,9 @@
           "direct_meters" : null,
           "action_ids" : [5],
           "actions" : ["MyIngress.calcHash"],
-          "base_default_next" : "MyIngress.forward_hash",
+          "base_default_next" : "tbl_act",
           "next_tables" : {
-            "MyIngress.calcHash" : "MyIngress.forward_hash"
+            "MyIngress.calcHash" : "tbl_act"
           },
           "default_entry" : {
             "action_id" : 5,
@@ -811,8 +926,77 @@
           }
         },
         {
-          "name" : "MyIngress.forward_hash",
+          "name" : "tbl_act",
           "id" : 2,
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [8],
+          "actions" : ["act_1"],
+          "base_default_next" : "node_6",
+          "next_tables" : {
+            "act_1" : "node_6"
+          },
+          "default_entry" : {
+            "action_id" : 8,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_act_0",
+          "id" : 3,
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [6],
+          "actions" : ["act"],
+          "base_default_next" : "MyIngress.forward_hash",
+          "next_tables" : {
+            "act" : "MyIngress.forward_hash"
+          },
+          "default_entry" : {
+            "action_id" : 6,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_act_1",
+          "id" : 4,
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [7],
+          "actions" : ["act_0"],
+          "base_default_next" : "MyIngress.forward_hash",
+          "next_tables" : {
+            "act_0" : "MyIngress.forward_hash"
+          },
+          "default_entry" : {
+            "action_id" : 7,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "MyIngress.forward_hash",
+          "id" : 5,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
             "line" : 153,
@@ -835,10 +1019,10 @@
           "direct_meters" : null,
           "action_ids" : [4, 1],
           "actions" : ["MyIngress.ipv4_forward", "NoAction"],
-          "base_default_next" : null,
+          "base_default_next" : "tbl_act_2",
           "next_tables" : {
-            "MyIngress.ipv4_forward" : null,
-            "NoAction" : null
+            "MyIngress.ipv4_forward" : "tbl_act_2",
+            "NoAction" : "tbl_act_2"
           },
           "default_entry" : {
             "action_id" : 1,
@@ -848,8 +1032,31 @@
           }
         },
         {
+          "name" : "tbl_act_2",
+          "id" : 6,
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [9],
+          "actions" : ["act_2"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "act_2" : null
+          },
+          "default_entry" : {
+            "action_id" : 9,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
           "name" : "tbl_drop",
-          "id" : 3,
+          "id" : 7,
           "key" : [],
           "match_type" : "exact",
           "type" : "simple",
@@ -878,7 +1085,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 166,
+            "line" : 167,
             "column" : 12,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -897,13 +1104,13 @@
           "false_next" : "tbl_drop"
         },
         {
-          "name" : "node_4",
+          "name" : "node_6",
           "id" : 1,
           "source_info" : {
             "filename" : "resposta/task_1.p4",
-            "line" : 168,
-            "column" : 15,
-            "source_fragment" : "standard_metadata.ingress_port == 1"
+            "line" : 171,
+            "column" : 16,
+            "source_fragment" : "tmp == 0"
           },
           "expression" : {
             "type" : "expression",
@@ -911,16 +1118,16 @@
               "op" : "==",
               "left" : {
                 "type" : "field",
-                "value" : ["standard_metadata", "ingress_port"]
+                "value" : ["scalars", "tmp"]
               },
               "right" : {
                 "type" : "hexstr",
-                "value" : "0x0001"
+                "value" : "0x0000"
               }
             }
           },
-          "false_next" : null,
-          "true_next" : "tbl_calcHash"
+          "true_next" : "tbl_act_0",
+          "false_next" : "tbl_act_1"
         }
       ]
     },
@@ -929,7 +1136,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "resposta/task_1.p4",
-        "line" : 183,
+        "line" : 190,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
